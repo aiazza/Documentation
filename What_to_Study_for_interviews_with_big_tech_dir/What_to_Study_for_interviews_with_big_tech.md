@@ -125,7 +125,41 @@ MED is used to influence ingress traffic, it is important to note that MED is ju
 ##### More specific routes out of preferred route - Selective Advertisement
 This technique is used to influence inbound traffic. How it works is that we advertise a more specific prefix over a link so that the external AS prefers that link for that prefix, for example if we are advertising 192.168.0.0/16 and we advertise 192.168.10.0/24 towards one AS so that it always uses that path for that prefix. because BGP prefers more specific routes over less specific ones. 
 ##### Communities
+BGP communities are pieces of information we can add to prefixes, this information can be used as a signal to take actions on such as traffic engineering or dynamic routing. 4 well-known internet BGP communities are :
+
+- Internet: advertise the prefix to all BGP neighbors.
+- No-Advertise: don’t advertise the prefix to any BGP neighbors.
+- No-Export: don’t advertise the prefix to any eBGP neighbors.
+- Local-AS: don’t advertise the prefix outside of the sub-AS (this one is used for BGP confederations).
+
+Additionally here are some communities used by Verizon :
+
+```
++-------------------+--------------+-----------------+
+| BGP Community String | LocalPref Value | Description     |
++-------------------+--------------+-----------------+
+| Default              | 100            | Default Value   |
+| 70x:80               | 80             | Set localpref 80 |
+| 70x:90               | 90             | Set localpref 90 |
+| 70x:110              | 110            | Set localpref 110 |
+| 70x:120              | 120            | Set localpref 120 |
++-------------------+--------------+-----------------+
+```
+
+
 ##### Conditional Advertisement
+
+Conditional advertisement is the process of advertising or not advertising routes based on meeting specific conditions. You have 2 modes of conditional advertisement : 
+
+- Advertise-Map: Advertise routes when conditions are met.
+- Non-Exist-Map: Advertise routes when conditions aren't met.
+
+Example : advertise a backup route only if the primary route is unavailable. You would define 2 route maps, 1 for primary route and 1 for backup route and specify which one to use in which condition, the command would look something like this : 
+```
+router bgp [YOUR_ASN]
+    neighbor [NEIGHBOR_IP] advertise-map BackupAdvertiseMap non-exist-map PrimaryRouteMap
+```
+
 ## BGP messaging system (Open - update - keepalive - notification)
 ## BGP neighbor states
 ## Route reflector vs confederations
