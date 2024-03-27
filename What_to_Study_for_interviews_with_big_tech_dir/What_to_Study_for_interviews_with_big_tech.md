@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Network Fundamentals
 
 ## Life of a Packet: Understanding the Journey
