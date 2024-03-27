@@ -60,19 +60,19 @@ BGP attributes are attributes used to determine the best route to choose between
 
 ### Details of AS_PATH
 ### Atomic aggregate and aggregator
-- Aggregator
+#### Aggregator
 
 Aggregator is an BGP attribute that specifies to neighbor in which AS Number aggregation was done as well as the routing ID 
 
-- Atomic aggregator
+#### Atomic aggregator
 
 Specifies that route has been aggregated and some prefixes may be suppressed 
 ### 16-bit (2byte) vs 32-bit (4byte) ASN
-- 2 Byte ASN
+#### 2 Byte ASN
 
 Due to the large number of entities using BGP and the internet growing larger every year, the 16 bit ASN started to be a constraint for large scale deployment, similarly to IPv4 running out of addressing space and needing to go to IPv6. As a refresher there are two types of BGP Autonomous system numbers: Private and Public. The Public AS numbers range from 1 to 64511 and the Private AS numbers range from 64512 to 65535 leaving only 1023 Autonomous systems for organizations to use. This is not an issue for Regular enterprise networks, even very large ones, but is an issue for hyperscalers which use BGP as IGP in the datacenter for example. 
 
-- 4-Byte ASN
+#### 4-Byte ASN
 
 Because of that 4 byte ASN feature was developed for BGP which give much more address space to use. 4 byte ASN also has a public and a private range, the public 4-byte AS number range is from 1 to 4,199,999,999 while ,the private 4-byte AS number range is from 4,200,000,000 to 4,294,967,294, This provides a total of 94,967,295 private AS numbers available for use in various private networks and scenarios, quite a lot huh ? 
 
