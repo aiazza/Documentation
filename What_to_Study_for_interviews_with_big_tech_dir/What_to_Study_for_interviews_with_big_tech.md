@@ -76,7 +76,7 @@ Due to the large number of entities using BGP and the internet growing larger ev
 
 Because of that 4 byte ASN feature was developed for BGP which give much more address space to use. 4 byte ASN also has a public and a private range, the public 4-byte AS number range is from 1 to 4,199,999,999 while ,the private 4-byte AS number range is from 4,200,000,000 to 4,294,967,294, This provides a total of 94,967,295 private AS numbers available for use in various private networks and scenarios, quite a lot huh ? 
 
-## BGP Load sharing 
+## BGP Load sharing & Multihoming
 #### Load Sharing with the Loopback Address as a BGP Neighbor
 When we do load sharing between neighbors forming over loopback addresses connected via multiple links (Maximum of 6) We can achieve load sharing by using the **ebgp-multihop** command, you must configure ebgp-multihop whenever the external BGP (eBGP) connections are not on the same network address.
 
@@ -107,14 +107,25 @@ Load balancing is not possible in a multihomed environment with two ISPs. BGP se
 
 
 ## BGP Traffic engineering (inbound/outbound)
-### Multi-homing
-#### Multi-homing with the Same ISP
+### Hot potato / Cold potato routing 
+- Hot Potato Routing: The network tries to offload the traffic as soon as possible, onto another network. It chooses the shortest path to exit its own network, regardless of the total path length or the subsequent path that the traffic will take once it has left the network. Figure below on the left.
 
-#### Multi-homing with different ISP 
-### AS path prepend
-### More specific routes out of preferred route
-### Communities
-### do not advertise at all
+- Cold Potato Routing: The network keeps the traffic within its own network for as long as possible, preferring a longer internal path if it results in a shorter path once the traffic exits the network. Figure below on the right.
+
+![alt text](https://miro.medium.com/v2/resize:fit:1400/format:webp/0*zzx4mX6ToQlGpKb2)
+
+
+#### Traffic Engineering toolset
+##### AS Path prepend
+AS Path prepend is used to influence inbound traffic, by prepending the routers AS one or multiple times to the AS_PATH attribute of the prefix, we can effectively make the neighbor prefer another path. 
+##### Local preference
+Local preference is used to influence outbound traffic, it is an attribute that is propagated to the whole AS which can be used to prefer one path over the other when multiples paths exist for a specific outbound destination.
+##### Multi-Exit Discriminator (MED)
+MED is used to influence ingress traffic, it is important to note that MED is just a recommendation and may or may not be used by the external AS, due to that this is less frequently used.
+##### More specific routes out of preferred route - Selective Advertisement
+This technique is used to influence inbound traffic. How it works is that we advertise a more specific prefix over a link so that the external AS prefers that link for that prefix, for example if we are advertising 192.168.0.0/16 and we advertise 192.168.10.0/24 towards one AS so that it always uses that path for that prefix. because BGP prefers more specific routes over less specific ones. 
+##### Communities
+##### Conditional Advertisement
 ## BGP messaging system (Open - update - keepalive - notification)
 ## BGP neighbor states
 ## Route reflector vs confederations
