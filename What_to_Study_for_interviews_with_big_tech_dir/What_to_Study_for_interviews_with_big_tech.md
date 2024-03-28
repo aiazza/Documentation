@@ -173,10 +173,33 @@ Here are the states BGP has to go through to establish a neighbor relationship :
 ![alt text](https://cdn.networklessons.com/wp-content/uploads/2015/04/bgp-states-neighbor-adjacency.png)
 
 ## Route reflector vs confederations
-### Route reflector scaling
-### Route reflector redundancy
+### Route reflectors 
+To understand what route reflectors are used for we have to understand why they are used. When we have multiple iBGP neighbors there is a rule called iBGP split horizon, which is that any route received from an internal peer cannot be advertised to another internal peer. Due to that all iBGP nodes have to be fully meshed, this is ok when we have 5 routers but when we have hundreds of thousands like in hyperscalers that can get messy very fast, it's not scalable at all. Thats why route reflectors exist, Route reflectors are a way to designate one router as route "server" and other routers as route "clients".
+#### Route reflector scaling
+
+We can achieve very large BGP topology scale using hierarchical route-reflector design 
+
+
+- What is a hierarchical route-reflector design ? 
+A hierarchical route-reflector design is a design where a there are multiple layers of route-reflectors, there are top-level route-reflectors connected to clients that are also route-reflectors in other clusters. 
+
+- Why use this design ? 
+Because in some very large networks a single layer of route-reflectors may not be enough, normally when you implement your route-reflectors the number of iBGP full-mesh links should reduce drastically, if the number of remaining links is still too much you can implement a second layer of hierarchy.
+
+How do we prevent loops in this design ? 
+The key to preventing loops in a hierarchical route-reflector cluster design is the cluster-list, it is like the AS_PATH Attribute, with every reflection the cluster-list will be longer. If a route comes back to the original reflector, it will discard the packet.
+#### Route reflector redundancy
+A common practice in enterprise networks is to add another Route reflector to avoid having a single point of failure of the only RR if  the network goes down. This is called a non-redundant cluster. This should be avoided if possible. The concept of clusters is introduced to prevent BGP routing loops when you use multiple RR's in your network.
+#### Route reflector cluster 
+Clusters are a set of a route-reflector and it's client's that are designed to prevent routing loops in an multi-route-reflector topology. Each cluster has it's own cluster ID which is propagated as an attribute called "cluster list" , the cluster-id is unique to the AS. Route reflectors from different clusters need to be fully meshed with route-reflectors from other clusters except in a hierarchical design where a route-reflector is a client of another route-reflector. Cluster ID is not known by clients. You have the choice of specifically configuring the cluster ID with the bgp cluster-id command, if you don't the cluster-id will be the router-id of the route-reflector. 
 ### loop prevention in RR architectures
-## iBGP vs eBGP
+So how do we prevent loops in redundance Route reflector architecture ?
+Simple, by using Originator ID and Cluster list :
+
+- Originator-ID : This is the router ID of the route originator, where the route comes from in plain english. If a router sends a route then receives a route with it's own originator-ID there must be a loop somewhere, therefore the route will be discarded. 
+- Cluster-list : As discussed above, cluster-list is used a little like the AS_PATH attribute in the sense that each reflector appends it's own cluster ID to the cluster list, if a RR receives a route with it's own cluster-ID in the cluster-list, it knows there must be a loop somewhere so it discards the packets. 
+### Confederations 
+What Are BGP Confederations 
 
 # Automation
 
