@@ -168,7 +168,10 @@ Here are the states BGP has to go through to establish a neighbor relationship :
 - Active : BGP will try to initiate another TCP 3-Way handshake, if successful it will move to **OpenSent** state. If the ConnectRetry time expires it will go back to the Connect state. 
 - OpenSent : BGP will wait for an open message from neighbor and will check if everything is there are no errors (wrong ASN, incorrect version etc), if everything is OK BGP starts sending keepalive messages and goes to **OpenConfirm** State, if TCP session fails it will go back to **Active** .
 - OpenConfirm : BGP waits for a keepalive messafe from neighbor, once we recieve the keepalive, we can safely go to **Established** state.
-- Established : BGP Neighbor adjacency is formed and routers are exchanging routes. 
+- Established : BGP Neighbor adjacency is formed and routers are exchanging routes.
+  
+![alt text](https://cdn.networklessons.com/wp-content/uploads/2015/04/bgp-states-neighbor-adjacency.png)
+
 ## Route reflector vs confederations
 ### Route reflector scaling
 ### Route reflector redundancy
