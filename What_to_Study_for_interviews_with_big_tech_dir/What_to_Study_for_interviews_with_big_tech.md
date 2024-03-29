@@ -121,7 +121,7 @@ AS Path prepend is used to influence inbound traffic, by prepending the routers 
 ##### Local preference
 Local preference is used to influence outbound traffic, it is an attribute that is propagated to the whole AS which can be used to prefer one path over the other when multiples paths exist for a specific outbound destination.
 ##### Multi-Exit Discriminator (MED)
-MED is used to influence ingress traffic, it is important to note that MED is just a recommendation and may or may not be used by the external AS, due to that this is less frequently used.
+MED is used to influence ingress traffic, it is important to note that MED is just a recommendation and may or may not be used by the external AS, due to that this is less frequently used. It's worth noting that we only compare MED between different paths in the same AS, if we receive different paths to the same prefix from 2 different AS's it won't compare MED values for them. 
 ##### More specific routes out of preferred route - Selective Advertisement
 This technique is used to influence inbound traffic. How it works is that we advertise a more specific prefix over a link so that the external AS prefers that link for that prefix, for example if we are advertising 192.168.0.0/16 and we advertise 192.168.10.0/24 towards one AS so that it always uses that path for that prefix. because BGP prefers more specific routes over less specific ones. 
 ##### Communities
@@ -161,6 +161,12 @@ router bgp [YOUR_ASN]
 ```
 
 ## BGP messaging system (Open - update - keepalive - notification)
+BGP relies on different message types to establish neighborships, verify neighborship health, and exchange updates, here are the message types : 
+- Open : This is the first message after the TCP session has been formed. This message contains information such as BGP version number, the autonomous system (AS) number of the sender, the BGP identifier (usually the router's IP address), and optional parameters that may include capabilities like support for 4-byte AS numbers or route refresh capabilities.
+- Update  :  Update message are used to exchange routing information, these messages can advertise new routes as well as withdraw routes not relevant, these messages also carry BGP Path attributes such as local preference, AS_PATH, MED , communities etc.
+- Keepalive : This is how BGP knows that the neighbor is still there and healthy. The frequency is determined by the hold time negotiated during neighborship process. If BGP does not receive a keepalive for the hold time it will reset the session.
+- Notification : These messages are used to notify the neighbor of errors and eventually reset the connection, more info on the specific notification codes here : https://www.inetdaemon.com/tutorials/internet/ip/routing/bgp/operation/messages/notification.shtml
+
 ## BGP neighbor states
 Here are the states BGP has to go through to establish a neighbor relationship : 
 - Idle : This state is the state in which BGP is initially set to after configuring the neighbor command, in this state the neighbor is waiting for a start event. The start event occurs when we configure another router to be BGP neighbor of the first router. It resets the ConnectRetry timer which controls the interval between successive attempts to establish a TCP connection with a peer after a previous attempt fails. in this state we try to initiate a TCP 3-way handshake, if successful it moves to the **Connect** State, if not it stays Idle.
@@ -199,7 +205,13 @@ Simple, by using Originator ID and Cluster list :
 - Originator-ID : This is the router ID of the route originator, where the route comes from in plain english. If a router sends a route then receives a route with it's own originator-ID there must be a loop somewhere, therefore the route will be discarded. 
 - Cluster-list : As discussed above, cluster-list is used a little like the AS_PATH attribute in the sense that each reflector appends it's own cluster ID to the cluster list, if a RR receives a route with it's own cluster-ID in the cluster-list, it knows there must be a loop somewhere so it discards the packets. 
 ### Confederations 
-What Are BGP Confederations 
+- What Are BGP Confederations ?
+
+BGP confederations are a way of splitting an AS into multiple sub-AS's, for neighbors peering with that AS, it is transparent as confederations are only visible within the AS. Confederations are used to partition an AS into multiple pieces, this could based on geographical location, need for different eBGP type routing policies within an AS, different organization within the same AS etc. Confederations use eBGP to communicate with each other exactly as if it were two external AS's.
+
+- What is the loop prevention mechanism in BGP confederations ?
+
+The loop prevention mechanism in BGP confederations depends on who we are communicating with. If we are communicating with peers outside the overlying AS then the rulesare the same as for eBGP neighbors, if the router sees it's own ASN in the AS_Path it will drop the prefix. If we are communicating with peers inside the same AS but in different confederations, then BGP adds an attibutes called CONFED_SEQUENCE, which operates like an AS path but uses only the privately assigned sub-AS numbers
 
 # Automation
 
