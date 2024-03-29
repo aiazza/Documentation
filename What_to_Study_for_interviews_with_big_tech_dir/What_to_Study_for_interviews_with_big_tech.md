@@ -38,13 +38,26 @@ Client                                       Server
   |                                            |
 
 ```
+## TCP header (size / fields) , MSS
+Let's take a look at the TCP header, it's fields and what everything means : 
+- Source Port : This is the field that specifies the port number of sender.
+- Destination port : This is the field that specifies the port number of receiver.
+- Sequence number : In TCP, each segment is assigned with a sequence number, this is to keep track of all segments and in which order they have been sent, it's also used to know if the receiver has received the segment.
+- Acknowledgment number : This field is used to acknowledge a segment and request the next TCP segment, specifically setting the ack number to the next byte it should receive. Example, if a receiver has successfully received a segment with sequence numbers 1 to 1000, the acknowledgment number sent back to the sender will be 1001.
+- Data offset (DO) : This is also known as header lenght, this is used to to indicate the lenght of TCP header so we know where the data actually begins.
+- RSV : This is the reserved field, it's not used and always set to 0.
+- Flags : We will discuss flags in the next section.
+- Window : This specifies the maximum amount of data the receiver can receive before needing to send an ack, it's called the receive window (RCWD), this is used so the sender does not send more data than the receivers buffer can handle, avoiding buffer overflow.
+- Checksum : Checksum to see if the TCP header is ok or not
+- Urgent Pointer : if the urgent flag is set, this pointer specifies where the urgent portion of data ends, so that the receiver treats the data up to this point as urgent.
+- Options : Optional field that can be used to extend TCP capabilities beyond the basic header structure.
+![alt text](https://cdn.networklessons.com/wp-content/uploads/2015/07/tcp-header.png)
 
-## Selective Ack
 ## Flags
-## Different implementations of TCP
 ## Congestion control (CWND, RWND)
 ## Window scaling
-## TCP header (size / fields) , MSS
+## Selective Ack
+## Different implementations of TCP
 
 # OSPF
 
