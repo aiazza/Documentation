@@ -78,7 +78,10 @@ There are multiple phases in TCP congestion control, here are the various phases
 - Fast recovery : Fast Recovery serves as a midpoint between the aggressive Slow Start and the conservative Congestion Avoidance phases. It is triggered upon receiving three duplicate ACKs, which indicate packet loss. The primary aim of Fast Recovery is to recover from this loss without significantly reducing the CWND. After detecting packet loss through duplicate ACKs, TCP Fast Recovery moderately reduces the CWND (not as drastically as in Slow Start), retransmits the lost packet, then increases the CWND incrementally for each received duplicate ACK thereafter. The process transitions back to Congestion Avoidance once the lost packet is successfully acknowledged, striving to maintain efficient throughput while minimizing further congestion.
 
 ## Window scaling
+In TCP header the window field  specifies the maximum amount of data the receiver can receive before needing to send an ACK. This field is only 2 bytes which means the maximum window size is 65535. When TCP was designed this size was ok for the hosts at that time, but now we have much more capable systems and much larger buffers, so how to tell TCP that our window is bigger than 65535 if we only have 2 bytes ? By using window scaling. Windows scaling makes use of the TCP options field to define a scale factor. The scale factore is by how much the scaling window should be scaled.   Example :Let say client sends SYN packet to server and says that its scaling factor = 2 and receives scaling factor of receiver in ‘SYN+ACK’ packet from receiver.Now in next packet sender tells its window size = 200 bytes. Then Server will calculate the real buffer size available at client as: window_size * 2^2 = 800bytes
+
 ## Selective Ack
+
 ## Different implementations of TCP
 
 # OSPF
