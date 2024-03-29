@@ -23,6 +23,22 @@
 # TCP/IP
 
 ## 3 Way Handshake
+As we know TCP is a connection-oriented transport protocol, what does it mean ? It means that before communicating data with a destination host we form a session, sort of a virtual tunnel with certain mechanisms to make sure all packets arrive reliably .Speaking of reliability We often hear that TCP is reliable, we say that because with TCP mechanism we make sure that all packets are delivered with no errors and in the right order. In order to establish the connection TCP goes through a process called the 3-way handshake where each side announces its capabilities and preferences in the form of TCP options, after that our TCP connection is formed, here is the sequence of events : 
+- 1 : Client (host initiating the request) initiates TCP connection by sending TCP segment with SYN flag, this is the first step of forming a TCP connection, the client  announces it's initial sequence number as well as other options specific to the host (Maximum Segment Size (MSS) , Window Scale option,  Selective Acknowledgment (SACK) etc.)
+- 2 : Server (host receiving the request) responds with a TCP segmen with the SYN and the ACK flag, the ack is the clients initial sequence number + 1 
+- 3 : Client will respond with a TCP segment including the ACK flag adding 1 to the initial sequence number sent during SYN and adding 1 to the first server ACK seq number. 
+```
+Client                                       Server
+  |                                            |
+  | ----- SYN (Seq X) -----------------------> |    1. Client sends SYN with sequence number X
+  |                                            |
+  | <---- SYN-ACK (Seq Y, Ack X+1) ---------- |    2. Server responds with SYN-ACK, sequence number Y, and acknowledgment X+1
+  |                                            |
+  | ----- ACK (Seq X+1, Ack Y+1) -----------> |    3. Client acknowledges with ACK, sequence number X+1, and acknowledgment Y+1
+  |                                            |
+
+```
+
 ## Selective Ack
 ## Flags
 ## Different implementations of TCP
