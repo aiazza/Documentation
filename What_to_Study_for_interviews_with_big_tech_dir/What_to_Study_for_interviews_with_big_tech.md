@@ -81,6 +81,48 @@ There are multiple phases in TCP congestion control, here are the various phases
 In TCP header the window field  specifies the maximum amount of data the receiver can receive before needing to send an ACK. This field is only 2 bytes which means the maximum window size is 65535. When TCP was designed this size was ok for the hosts at that time, but now we have much more capable systems and much larger buffers, so how to tell TCP that our window is bigger than 65535 if we only have 2 bytes ? By using window scaling. Windows scaling makes use of the TCP options field to define a scale factor. The scale factore is by how much the scaling window should be scaled.   Example :Let say client sends SYN packet to server and says that its scaling factor = 2 and receives scaling factor of receiver in ‘SYN+ACK’ packet from receiver.Now in next packet sender tells its window size = 200 bytes. Then Server will calculate the real buffer size available at client as: window_size * 2^2 = 800bytes
 
 ## Selective Ack
+When communicating between hosts what can happen is that we lose a packet in-flight, let's illustrate for visualization purposes. Let's say you have host A communicating with host B, host A send segment 1,2,3 and segment 4 is lost in flight, then host A send segment 5,6,7. Host B will send the ACK for segment 3 with sequence number 4 and keep sending that ACK for each received segment until host A retransmits the segment 4. After retrasmitting segment 4, host A will have to retransmit segment 5,6,7 as well as there is no tracking of what was received and what was not. That's where selective ACK comes into play. SACK allows Host B to acknowledge non-contiguous blocks of data that have been successfully received. So, even if segment 4 is lost, Host B can still inform Host A that it has received segments 5, 6, and 7. When Host A receives the SACK for segments 5, 6, and 7, it knows exactly which segment was lost (segment 4) and only needs to retransmit that specific segment.
+
+- Without SACK 
+```
+Host A (Sender)                                            Host B (Receiver)
+   |                                                         |
+   | -- Segment 1 (Seq: 1) ------------------------------->  |
+   | -- Segment 2 (Seq: 2) ------------------------------->  | ACK 2 (Expecting Seq: 3)
+   | -- Segment 3 (Seq: 3) ------------------------------->  | ACK 3 (Expecting Seq: 4)
+   | -- Segment 4 (Seq: 4) ---X (Lost in Transit)            |
+   | -- Segment 5 (Seq: 5) ------------------------------->  | ACK 3 (Still expecting Seq: 4)
+   | -- Segment 6 (Seq: 6) ------------------------------->  | ACK 3 (Still expecting Seq: 4)
+   | -- Segment 7 (Seq: 7) ------------------------------->  | ACK 3 (Still expecting Seq: 4)
+   |                                                         |
+   | <Notices repeated ACK for 3, retransmits 4>             |
+   | -- Segment 4 (Seq: 4) ------------------------------->  | ACK 4 (Expecting Seq: 5)
+   | <Need to retransmit 5, 6, 7>                    |
+   | -- Segment 5 (Seq: 5) ------------------------------->  | ACK 5 (Expecting Seq: 6)
+   | -- Segment 6 (Seq: 6) ------------------------------->  | ACK 6 (Expecting Seq: 7)
+   | -- Segment 7 (Seq: 7) ------------------------------->  | ACK 7 (Expecting Seq: 8)
+   |                                                         |
+```
+- With SACK
+
+```
+Host A (Sender)                                            Host B (Receiver)
+   |                                                         |
+   | -- Segment 1 (Seq: 1) ------------------------------->  |
+   | -- Segment 2 (Seq: 2) ------------------------------->  | ACK 2 (Expecting Seq: 3)
+   | -- Segment 3 (Seq: 3) ------------------------------->  | ACK 3 (Expecting Seq: 4)
+   | -- Segment 4 (Seq: 4) ---X (Lost in Transit)            |
+   | -- Segment 5 (Seq: 5) ------------------------------->  | ACK 3 (Expecting Seq: 4, SACK 5)
+   | -- Segment 6 (Seq: 6) ------------------------------->  | ACK 3 (Expecting Seq: 4, SACK 5-6)
+   | -- Segment 7 (Seq: 7) ------------------------------->  | ACK 3 (Expecting Seq: 4, SACK 5-7)
+   |                                                         |  
+   | <Receives SACK for 5-7, knows 4 is missing>             |
+   | -- Segment 4 (Seq: 4) ------------------------------->  | ACK 3 (Expecting Seq: 8, SACK 5-7)
+   |                                                         |
+   | <No need to retransmit 5, 6, 7 due to SACK>             |
+   |                                                         |  
+
+```
 
 ## Different implementations of TCP
 
