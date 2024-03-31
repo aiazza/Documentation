@@ -231,11 +231,11 @@ Here are the states BGP has to go through to establish a neighbor relationship :
 - Established : BGP Neighbor adjacency is formed and routers are exchanging routes.
   
 ![alt text](https://cdn.networklessons.com/wp-content/uploads/2015/04/bgp-states-neighbor-adjacency.png)
-
-## Route reflector vs confederations
-### Route reflectors 
+## BGP Scaling 
+### Route reflector and confederations
+#### Route reflectors 
 To understand what route reflectors are used for we have to understand why they are used. When we have multiple iBGP neighbors there is a rule called iBGP split horizon, which is that any route received from an internal peer cannot be advertised to another internal peer. Due to that all iBGP nodes have to be fully meshed, this is ok when we have 5 routers but when we have hundreds of thousands like in hyperscalers that can get messy very fast, it's not scalable at all. Thats why route reflectors exist, Route reflectors are a way to designate one router as route "server" and other routers as route "clients".
-#### Route reflector scaling
+##### Route reflector scaling
 
 We can achieve very large BGP topology scale using hierarchical route-reflector design 
 
@@ -248,17 +248,17 @@ Because in some very large networks a single layer of route-reflectors may not b
 
 How do we prevent loops in this design ? 
 The key to preventing loops in a hierarchical route-reflector cluster design is the cluster-list, it is like the AS_PATH Attribute, with every reflection the cluster-list will be longer. If a route comes back to the original reflector, it will discard the packet.
-#### Route reflector redundancy
+##### Route reflector redundancy
 A common practice in enterprise networks is to add another Route reflector to avoid having a single point of failure of the only RR if  the network goes down. This is called a non-redundant cluster. This should be avoided if possible. The concept of clusters is introduced to prevent BGP routing loops when you use multiple RR's in your network.
-#### Route reflector cluster 
+##### Route reflector cluster 
 Clusters are a set of a route-reflector and it's client's that are designed to prevent routing loops in an multi-route-reflector topology. Each cluster has it's own cluster ID which is propagated as an attribute called "cluster list" , the cluster-id is unique to the AS. Route reflectors from different clusters need to be fully meshed with route-reflectors from other clusters except in a hierarchical design where a route-reflector is a client of another route-reflector. Cluster ID is not known by clients. You have the choice of specifically configuring the cluster ID with the bgp cluster-id command, if you don't the cluster-id will be the router-id of the route-reflector. 
-### loop prevention in RR architectures
+##### loop prevention in RR architectures
 So how do we prevent loops in redundance Route reflector architecture ?
 Simple, by using Originator ID and Cluster list :
 
 - Originator-ID : This is the router ID of the route originator, where the route comes from in plain english. If a router sends a route then receives a route with it's own originator-ID there must be a loop somewhere, therefore the route will be discarded. 
 - Cluster-list : As discussed above, cluster-list is used a little like the AS_PATH attribute in the sense that each reflector appends it's own cluster ID to the cluster list, if a RR receives a route with it's own cluster-ID in the cluster-list, it knows there must be a loop somewhere so it discards the packets. 
-### Confederations 
+#### Confederations 
 - What Are BGP Confederations ?
 
 BGP confederations are a way of splitting an AS into multiple sub-AS's, for neighbors peering with that AS, it is transparent as confederations are only visible within the AS. Confederations are used to partition an AS into multiple pieces, this could based on geographical location, need for different eBGP type routing policies within an AS, different organization within the same AS etc. Confederations use eBGP to communicate with each other exactly as if it were two external AS's.
@@ -266,6 +266,44 @@ BGP confederations are a way of splitting an AS into multiple sub-AS's, for neig
 - What is the loop prevention mechanism in BGP confederations ?
 
 The loop prevention mechanism in BGP confederations depends on who we are communicating with. If we are communicating with peers outside the overlying AS then the rulesare the same as for eBGP neighbors, if the router sees it's own ASN in the AS_Path it will drop the prefix. If we are communicating with peers inside the same AS but in different confederations, then BGP adds an attibutes called CONFED_SEQUENCE, which operates like an AS path but uses only the privately assigned sub-AS numbers
+
+### Improving BGP convergence time 
+#### Next Hop Address Tracking
+For each route in BGP the next hop has to exist and be reachable. BGP uses a scanner to detect validity of routes as well as next-hop reachability, that scanner runs every 60 seconds which is very long in our modern networks, if the next hop changes during this time you could have blackhole issues. There is a feature that addresses this issue that's called Next Hop address tracking, how it works is that instead of scanning the next hops every 60 seconds it will schedule a scan 5 seconds after there is a change in the routing table. The recommendation from Cisco is to configure Dampening alongside next hop address tracking as an unstable IGP peering session could highly impact BGP if it were to flap every 10 seconds for example. 
+
+- How does BGP Route dampening work ?
+
+BGP route dampening assigns penalties to flapping routes and then removes them once it deems them stable again. 
+
+There are five attributes for BGP Route dampening:
+
+- Penalty: 1000
+- Suppress-Limit: 2000
+- Half-Life: 15 minutes
+- Reuse limit: 750
+- Maximum Suppress-Limit: 60 minutes
+
+In a nutshell, here’s how it works:
+
+- Each time a route flaps, the penalty is increased by 1000.
+- When the route exceeds the suppress limit, the route is dampened.
+- Once the route is dampened, the router won’t install the route in the routing table nor advertise it to other BGP neighbors.
+- When the router learns again about a route with a penalty, the half-life timer starts. When half-life is reached, the penalty is reduced by 50%.
+- To install or advertise the route again, the penalty has to be lower than a reuse limit.
+- Once the penalty is below 50% of the reuse limit, the penalty is removed completely.
+
+Here is an example:
+
+- The penalty is 4000 and the half-life time is 15 minutes.
+- After 15 minutes the penalty is 2000.
+- After another 15 minutes, the penalty is 1000.
+- Another 15 minutes and the penalty is 500.
+- Once the penalty is below the reuse limit of 750, the route can be used again and advertised to other BGP routers. When the penalty is below 50% of the reuse limit, the penalty is removed from the route.
+
+
+
+
+#### BFD 
 
 # Automation
 
