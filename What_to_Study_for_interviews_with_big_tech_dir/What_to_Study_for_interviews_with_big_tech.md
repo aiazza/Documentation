@@ -19,6 +19,7 @@
 
 ## Buffer
 ## RIB/FIB/TCAM
+## ASIC
 
 # TCP/IP
 
@@ -351,3 +352,5 @@ By default BGP keepalive timer is 60 seconds by default and the hold timer is 18
 
 ## Data structures and Algorithms
 ## Big O notation
+## Python basics
+## Regex
