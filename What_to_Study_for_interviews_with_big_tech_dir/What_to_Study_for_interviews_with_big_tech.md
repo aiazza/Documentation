@@ -146,7 +146,10 @@ Host A (Sender)                                            Host B (Receiver)
 - What are BGP attributes ?
 
 BGP attributes are attributes used to determine the best route to choose between multiple routes, one thing I use to memorize the is the mnemnonic **We Love Oranges As Oranges Mean Pure Refreshment** Which covers the first letter for the most important attributes :
-
+- Which are mandatory ? Example of BGP message screenshot (lab)
+- Exchange of 2 million routes ?
+- What is in each message ?
+- How to break the loop prevention rule (iBGP & eBGP) 
 - W - Weight : A Cisco-specific attribute that is local to the router and not advertised to other routers. Higher weights are preferred.
 - L - Local Preference : Indicates the preferred path within an AS. the higher the better, and this attribute is shared within the local AS.
 - O - Originate : Indicates the origin of the route, it can either be IGP (i - First preferred) meaning the route was originated using an interior gateway protocol such as OSPF or EIGRP, EGP(e - second preferred) meaning the route was learned via an exterior gateway protocol, this one is obsolete, or Incomplet (? - Least preferred) meaning this was injected other than IGP or EGP, for example through redistribution or 
