@@ -267,6 +267,10 @@ BGP relies on different message types to establish neighborships, verify neighbo
 - Keepalive : This is how BGP knows that the neighbor is still there and healthy. The frequency is determined by the hold time negotiated during neighborship process. If BGP does not receive a keepalive for the hold time it will reset the session.
 - Notification : These messages are used to notify the neighbor of errors and eventually reset the connection, more info on the specific notification codes here : https://www.inetdaemon.com/tutorials/internet/ip/routing/bgp/operation/messages/notification.shtml
 
+### What is the difference between explicit or implicit notifications ? 
+
+<TBD>
+
 ## BGP neighbor states
 Here are the states BGP has to go through to establish a neighbor relationship : 
 - Idle : This state is the state in which BGP is initially set to after configuring the neighbor command, in this state the neighbor is waiting for a start event. The start event occurs when we configure another router to be BGP neighbor of the first router. It resets the ConnectRetry timer which controls the interval between successive attempts to establish a TCP connection with a peer after a previous attempt fails. in this state we try to initiate a TCP 3-way handshake, if successful it moves to the **Connect** State, if not it stays Idle.
