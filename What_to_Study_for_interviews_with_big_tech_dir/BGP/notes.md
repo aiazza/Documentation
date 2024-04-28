@@ -1,13 +1,31 @@
 # BGP
-
+-
 ## BGP attributes
 - What are BGP attributes ?
 
-BGP attributes are attributes used to determine the best route to choose between multiple routes, one thing I use to memorize the is the mnemnonic **We Love Oranges As Oranges Mean Pure Refreshment** Which covers the first letter for the most important attributes :
-- Which are mandatory ? Example of BGP message screenshot (lab)
-- Exchange of 2 million routes ?
-- What is in each message ?
-- How to break the loop prevention rule (iBGP & eBGP) 
+BGP attributes provide information about the characteristics and preferences of each path, including its origin, length, weight, local preference etc. Attributes are crucial for BGP to determine the best path to that prefix and to apply policies to manipulate routing based on those attributes.
+
+There are 4 types of BGP attributes : 
+
+- Well-known Mandatory : Recognized by all BGP implementations and must be present in each update.
+  - AS-Path : List of autonomous systems that the update has traversed.
+  - Next-Hop : IP address of the next-hop router to which packets should be forwarded.
+  - Origin : Indicates how the route was learned
+- Well-known Discretionary Attributes : Recognized by all BGP implementations but inclusion in update is optional.
+    - Local preference : Indicates the preference of a route within the AS .
+    - Atomic Aggregate : Used to indicate that a route is a summary and the details of more specific routes are not present. it has been introduced to insure that certain aggregates are not de-aggregated which could lead to routing loops.
+- Optional Transitive Attributes : Not recognized by all BGP implementations but should be passed on to BGP peer even if they don't recognize the attribute.
+    - Aggregator : Aggregator is a BGP attribute that specifies to neighbor in which AS Number aggregation was done as well as the routing ID
+    - Community : Used to add custom tags/information to prefixes which facilitates policy implementation. 
+- Optional Non-Transitive Attributes : Not recognized by all BGP implementations but should not be passed on to BGP peer if they don't recognize the attribute.
+    - Multi-Exit Discriminator (MED) : Suggest remote AS a preferred path into the AS when multiple entry points exist.
+    - Originator ID : Identifies the router that originated the route in a route reflection scenario.
+    - Cluster list : Cluster-list is used a little like the AS_PATH attribute in the sense that each reflector appends it's own cluster ID to the cluster list, if a RR receives a route with it's own cluster-ID in the cluster-list, it knows there must be a loop somewhere so it discards the packets.
+
+  
+## BGP Best path selection 
+
+the best route to choose between multiple routes, one thing I use to memorize the is the mnemnonic **We Love Oranges As Oranges Mean Pure Refreshment** Which covers the first letter for the most important attributes :
 - W - Weight : A Cisco-specific attribute that is local to the router and not advertised to other routers. Higher weights are preferred.
 - L - Local Preference : Indicates the preferred path within an AS. the higher the better, and this attribute is shared within the local AS.
 - O - Originate : Indicates the origin of the route, it can either be IGP (i - First preferred) meaning the route was originated using an interior gateway protocol such as OSPF or EIGRP, EGP(e - second preferred) meaning the route was learned via an exterior gateway protocol, this one is obsolete, or Incomplet (? - Least preferred) meaning this was injected other than IGP or EGP, for example through redistribution or 
@@ -213,4 +231,10 @@ BGP is known to have slow convergence time, to address this limitation we can us
 
 #### Hold and keepalive timers 
 By default BGP keepalive timer is 60 seconds by default and the hold timer is 180 seconds, we can tweak these timers to lower values but this is not usually the path we prefer due to the risk of higher resource consumption as well as higher risk of link flaps impacting BGP. 
+
+- Which are mandatory ? Example of BGP message screenshot (lab)
+- Exchange of 2 million routes ?
+- What is in each message ?
+- How to break the loop prevention rule (iBGP & eBGP) 
+
 
