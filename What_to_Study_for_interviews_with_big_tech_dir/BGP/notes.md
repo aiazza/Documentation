@@ -88,6 +88,12 @@ BGP Uses the following messages to communicate and exchange information between 
 
 - Keepalive : Messages that BGP use to check if neighbors are still alive, exchanged every 60 seconds by default (Depends on BGP implementation).
 
+#### Explicit vs Implicit Updates 
+
+In BGP (Border Gateway Protocol), when discussing updates, the terms "explicit" and "implicit" updates refer to how routes are communicated or inferred as withdrawn or modified between BGP peers
+
+Explicit Withdrawal : meaning routes are announced or withdrawn through the UPDATE Message 
+Implicit Update : A new route is received which was already in the BGP Table, but the route has a different path. The router implicitly withdraws the old path for that network without receiveing withdrawn routes field of UPDATE message.
 ## BGP Load sharing & Multihoming
 #### Load Sharing with the Loopback Address as a BGP Neighbor
 When we do load sharing between neighbors forming over loopback addresses connected via multiple links (Maximum of 6) We can achieve load sharing by using the **ebgp-multihop** command, you must configure ebgp-multihop whenever the external BGP (eBGP) connections are not on the same network address.
@@ -171,17 +177,6 @@ Example : advertise a backup route only if the primary route is unavailable. You
 router bgp [YOUR_ASN]
     neighbor [NEIGHBOR_IP] advertise-map BackupAdvertiseMap non-exist-map PrimaryRouteMap
 ```
-
-## BGP messaging system (Open - update - keepalive - notification)
-BGP relies on different message types to establish neighborships, verify neighborship health, and exchange updates, here are the message types : 
-- Open : This is the first message after the TCP session has been formed. This message contains information such as BGP version number, the autonomous system (AS) number of the sender, the BGP identifier (usually the router's IP address), and optional parameters that may include capabilities like support for 4-byte AS numbers or route refresh capabilities.
-- Update  :  Update message are used to exchange routing information, these messages can advertise new routes as well as withdraw routes not relevant, these messages also carry BGP Path attributes such as local preference, AS_PATH, MED , communities etc.
-- Keepalive : This is how BGP knows that the neighbor is still there and healthy. The frequency is determined by the hold time negotiated during neighborship process. If BGP does not receive a keepalive for the hold time it will reset the session.
-- Notification : These messages are used to notify the neighbor of errors and eventually reset the connection, more info on the specific notification codes here : https://www.inetdaemon.com/tutorials/internet/ip/routing/bgp/operation/messages/notification.shtml
-
-### What is the difference between explicit or implicit notifications ? 
-
-<TBD>
   
 ## BGP Scaling 
 ### Route reflector and confederations
