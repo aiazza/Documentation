@@ -1,5 +1,4 @@
 # BGP
--
 ## BGP attributes
 - What are BGP attributes ?
 
