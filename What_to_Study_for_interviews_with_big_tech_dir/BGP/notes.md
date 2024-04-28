@@ -59,6 +59,32 @@ Here are the states BGP has to go through to establish a neighbor relationship :
 #### 4-Byte ASN
 
 Because of that 4 byte ASN feature was developed for BGP which give much more address space to use. 4 byte ASN also has a public and a private range, the public 4-byte AS number range is from 1 to 4,199,999,999 while ,the private 4-byte AS number range is from 4,200,000,000 to 4,294,967,294, This provides a total of 94,967,295 private AS numbers available for use in various private networks and scenarios, quite a lot huh ? 
+## BGP Messages 
+BGP Uses the following messages to communicate and exchange information between routers : 
+
+- Open : This is the message exchanged after BGP completes the TCP 3-way handshake, this message is used to establish a BGP session. In the OPEN message, the routers gives information about itself which has to be negotiated and accepted before exchanging routes, here is the information containted in the OPEN message :
+  - Version : Defines which BGP version the router is using, has to match.
+  - My AS : Router tells the peer which AS it's in, this will be used to define if we use iBGP or eBGP.
+  - Hold time : Time during which the router waits for a keepalive before declaring the neighbor dead and tearing down the session. On cisco the default is 180 seconds which is 3 keepalives (60 second)
+  - BGP identifier : This is the local BGP router ID, it's either hard coded with the **bgp router-id** command or it's the highest IP on loopback or physical interface.
+  - Optional parameters : here are some optional capabilities of router for example support of 4 byte ASN , MP-BGP - Route refresh etc.
+  
+  ![alt text](https://networklessons.com/wp-content/uploads/2015/05/wireshark-capture-bgp-open-message.png)
+
+- Update : Once the BGP session has been established it's time for route information to be exchanged between the routers, this is done with the update messages. The update message advertises prefixes with their attributes as well as withdrawn routes or can do both. The update message contains the following :
+  - Withdrawn routes : The route that are not reachable anymore and now are withdrawn from the routing table.
+  - Unfeasible routes length : Specifies the length of withdrawn routes field, when it is set to 0 there are no routes withdrawn.
+  - Path attributes : The attributes associated with the prefix
+  - Network layer reachability information : contains a list of prefixes that are being advertised to the peer.
+
+  ![alt text](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjYpSnljCFm64BBOYEroZrvWRi3LFozwO3U6Cqa7S6lru2Dd6YEREr0nXdPNmDjgR2uFSfJ2VbZauENU1I5zR_FMyHEX_J9MHGX1hMPOy-sWZ3yv5Q0UVxpHHKvEls0UatePL5ELlv1mXhY/s475/BGP+Update+Message.webp)
+
+ 
+- Notification : This message is sent by a BGP peer when an error is detected with the BGP session such as MD5 key mismatch, hold timer expiring or when reset is requested for example.
+
+  ![alt text](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh5gjWKk1o-MVuLHTcB7bcsVmDylPdzqBKoD4Qjov4CCxdSdTomMhhk_EAdP3LdJJN1408TFZCvynl-AFdlKrjAXJUUzeZk5ztIVI4SIz3rtgJxnv5oV4_8zeVfz8tpDb6ziyUJTdLzMX_T/w400-h138/BGP+Notification+Message.webp)
+
+- Keepalive : Messages that BGP use to check if neighbors are still alive, exchanged every 60 seconds by default (Depends on BGP implementation).
 
 ## BGP Load sharing & Multihoming
 #### Load Sharing with the Loopback Address as a BGP Neighbor
