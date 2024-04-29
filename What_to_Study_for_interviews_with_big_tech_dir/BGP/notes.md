@@ -219,7 +219,19 @@ The loop prevention mechanism in BGP confederations depends on who we are commun
 #### Next Hop Address Tracking
 For each route in BGP the next hop has to exist and be reachable. BGP uses a scanner to detect validity of routes as well as next-hop reachability, that scanner runs every 60 seconds which is very long in our modern networks, if the next hop changes during this time you could have blackhole issues. There is a feature that addresses this issue that's called Next Hop address tracking, how it works is that instead of scanning the next hops every 60 seconds it will schedule a scan 5 seconds after there is a change in the routing table. The recommendation from Cisco is to configure Dampening alongside next hop address tracking as an unstable IGP peering session could highly impact BGP if it were to flap every 10 seconds for example. 
 
-#### BGP Route dampening ?
+
+#### Bidirectional forwarding detection (BFD)
+BGP is known to have slow convergence time, to address this limitation we can use BFD alongside BGP to detect failures in a network very fast. To understand how fast, BGP keepalive timer is 60 seconds by default and the hold timer is 180 seconds meaning it could take up to 3 minutes for BGP to realize a neighbor is down and tear down the connection. BFD in contrast sends hello packets every 300 milliseconds and assumes the peer is down after 3 (in general) missed hello packets, so that's 3 min for BGP vs 0.9 seconds for BFD.  How it works is that it's a simple hello mechanism between both neighbors, once one side stops receiving hello packets for a specified duration (Multiplier - Number of missed hello packets before assuming it's down) it gives the information to BGP which tears down the neighbor connection. 
+
+#### Hold and keepalive timers 
+By default BGP keepalive timer is 60 seconds by default and the hold timer is 180 seconds, we can tweak these timers to lower values but this is not usually the path we prefer due to the risk of higher resource consumption as well as higher risk of link flaps impacting BGP. 
+
+- Which are mandatory ? Example of BGP message screenshot (lab)
+- Exchange of 2 million routes ?
+- What is in each message ?
+- How to break the loop prevention rule (iBGP & eBGP) 
+### Improving BGP stability 
+#### BGP Route dampening 
 
 BGP route dampening assigns penalties to flapping routes and then removes them once it deems them stable again. 
 
@@ -248,15 +260,7 @@ Here is an example:
 - Another 15 minutes and the penalty is 500.
 - Once the penalty is below the reuse limit of 750, the route can be used again and advertised to other BGP routers. When the penalty is below 50% of the reuse limit, the penalty is removed from the route.
 
-#### Bidirectional forwarding detection (BFD)
-BGP is known to have slow convergence time, to address this limitation we can use BFD alongside BGP to detect failures in a network very fast. To understand how fast, BGP keepalive timer is 60 seconds by default and the hold timer is 180 seconds meaning it could take up to 3 minutes for BGP to realize a neighbor is down and tear down the connection. BFD in contrast sends hello packets every 300 milliseconds and assumes the peer is down after 3 (in general) missed hello packets, so that's 3 min for BGP vs 0.9 seconds for BFD.  How it works is that it's a simple hello mechanism between both neighbors, once one side stops receiving hello packets for a specified duration (Multiplier - Number of missed hello packets before assuming it's down) it gives the information to BGP which tears down the neighbor connection. 
+### Common issues with BGP large scale networks 
+#### Path hunting
 
-#### Hold and keepalive timers 
-By default BGP keepalive timer is 60 seconds by default and the hold timer is 180 seconds, we can tweak these timers to lower values but this is not usually the path we prefer due to the risk of higher resource consumption as well as higher risk of link flaps impacting BGP. 
-
-- Which are mandatory ? Example of BGP message screenshot (lab)
-- Exchange of 2 million routes ?
-- What is in each message ?
-- How to break the loop prevention rule (iBGP & eBGP) 
-
-
+What is path hunting ? 
