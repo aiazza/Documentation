@@ -2,12 +2,26 @@
 
 ## Life of a Packet
 ### What happens when I type google.com in my browser
-- DNS resolution 
-  - ARP request : My machine will check in it's ARP cache if it knows the local Gateway MAC, if not it will send an ARP request. The ARP request will be sent flooded out of it's interfaces asking who has this IP address ?(DNS IP). If there is a L2 switch in between it will first check if it doesn't have the MAC of the gateway in it's MAC table, if not flood it out all ports except the one it received it on. The router configured as local gateway will respond to the ARP request, the switch will update it's MAC table and forward the ARP reply to the host. Now the host knows it's L3 destination IP (DNS) and it's L2 destination MAC (Gateway) So it will create a UDP packet with destination port 53 (DNS packet) with that info. The DNS will reply with whatever IP it has for Google.com, the PC will then have the correct IP to use to communicate with google.com
-- TCP Connection setup : Once My PC has the correct IP of google.com it will create TCP segment with destination port 443 to initiate connection with the host, the first step would be 3 way handshake. that TCP segment would be encapsulated in an IP header which would be used to be routed on the network towards google.com.
-- L3 Routing : The Packet would then hit the default gateway which would lookup the route in its RIB to see where to send that packet, and so on and so forth until it egresses towards the internet hits google.com host and replies to the PC.
-- HTTPS connection setup
-- Secure exchange of Data 
+- DNS Resolution
+When my machine needs to resolve a domain name like "google.com" to an IP address, it first checks its ARP cache to see if it already knows the MAC address of the local gateway. If not found, it sends an ARP request, which is broadcasted across all interfaces, asking who has the MAC address associated with the IP of the DNS server. If there's a Layer 2 switch in between, it checks its MAC table; otherwise, it floods the ARP request to all ports except the one it was received on. Upon receiving the request, the router acting as the local gateway responds with its MAC address. The switch updates its MAC table and forwards the ARP reply to my machine. Now armed with both the L3 destination IP (the DNS server) and its L2 destination MAC (the gateway), my machine crafts a UDP packet with destination port 53 (for DNS) and sends it to the DNS server. Upon receiving this request, the DNS server replies with the IP address associated with "google.com," equipping my PC with the correct IP to communicate with.
+
+- TCP Connection Setup
+With the correct IP address of "google.com" in hand, my PC proceeds to establish a TCP connection. It creates a TCP segment with the destination port set to 443 (for HTTPS) to initiate communication with the server. The first step is the three-way handshake, essential for establishing a reliable connection. This TCP segment is then encapsulated within an IP header for routing on the network towards "google.com."
+
+- L3 Routing
+The prepared packet now reaches the default gateway, which consults its Forwarding Information Base (FIB) which is populated by the control plane table (RIB) to determine where to forward the packet. This process repeats across multiple routers until the packet reaches its destination on the internet, eventually reaching Google's servers. The response from Google's server follows the reverse path until it reaches my PC.
+
+- HTTPS Connection Setup
+Once the TCP connection is established, the HTTPS connection setup begins. This involves initiating a TLS handshake for secure communication. During the handshake, encryption keys are exchanged, and the server's identity is verified through its certificate.
+
+- Secure Exchange of Data
+With the TLS handshake completed, my PC and the server can securely exchange data. This includes HTTP requests and responses, all encrypted to ensure privacy and security during transmission.
+
+
+
+
+
+
 
 ## Network Tools
 ### How does traceroute work
