@@ -44,8 +44,9 @@ Because of that 4 byte ASN feature was developed for BGP which give much more ad
 the best route to choose between multiple routes, one thing I use to memorize the is the mnemnonic **We Love Oranges As Oranges Mean Pure Refreshment** Which covers the first letter for the most important attributes :
 - W - Weight : A Cisco-specific attribute that is local to the router and not advertised to other routers. Higher weights are preferred.
 - L - Local Preference : Indicates the preferred path within an AS. the higher the better, and this attribute is shared within the local AS.
-- O - Originate : Indicates the origin of the route, it can either be IGP (i - First preferred) meaning the route was originated using an interior gateway protocol such as OSPF or EIGRP, EGP(e - second preferred) meaning the route was learned via an exterior gateway protocol, this one is obsolete, or Incomplet (? - Least preferred) meaning this was injected other than IGP or EGP, for example through redistribution or 
-- A - AS Path - The AS Path map, meaning a list of all the AS which the route transited by, this is important to prevent loops in eBGP or influence policy to prefer one route over the other. The lower the better 
+- O - Originate :  Prefer the path that the local router originated.
+- A - AS Path - The AS Path map, meaning a list of all the AS which the route transited by, this is important to prevent loops in eBGP or influence policy to prefer one route over the other. The lower the better
+- ORIGIN Code - Prefer the lowest origin code. There are three origin codes: IGP, EGP , incomplete. IGP is lower than EGP, and EGP is lower than INCOMPLETE. You can learn how it works in the origin code lesson.
 - M - MED (Multi-Exit Discriminator) : Suggest remote AS a preferred path into the AS when multiple entry points exist.
 - P - Prefer eBGP over IBGP - 
 - R - RID - Router ID 
