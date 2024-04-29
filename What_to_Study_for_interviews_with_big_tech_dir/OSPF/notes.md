@@ -39,12 +39,12 @@ There are 6 well-known LSA types :
 
 Here is a fun way of seeing it (only 1 to 7 because those are the most important) : 
 
-Type 1 : Router-LSA : "Hello fellow neighbors from Area 0 ! , My name is 1.1.1.1, here is the information about my links and neighbors !"
-Type 2 Network-LSA : "Hello I'm the DR in Area 0 for link 192.168.123.0 ! here is the information for all neighbors connected to me! "
-Type 3 : Network-summary LSA : "Hello ! I'm Area 1's ABR ! I see that I'm also connected to Area 0, here is a resumé of all networks in area 1 for area 0 to know where to reach us!" 
-Type 4 : ASBR-summary-LSA : "Hello ! I'm Area 1's ABR ! I know who the ASBR is ! I'm sending the routes out to you other areas so you know how to get out of this OSPF Domain!"
-Type 5 : AS-External-LSA : "Hello ! I am area 1's ASBR, I'm receiving a route from the outside world and I'm forwarding it to you guys! 
-Type 7 : NSSA-LSA : "Hello ! I am area 1's ASBR, I see that I'm in a not so stubby area and they don't accept type 5 LSA's, you know what ! I'll send it as a type 7 LSA and my buddy ABR will take care of the translation if it has to go to other zones ! 
+- Type 1 : Router-LSA : "Hello fellow neighbors from Area 0 ! , My name is 1.1.1.1, here is the information about my links and neighbors !"
+- Type 2 Network-LSA : "Hello I'm the DR in Area 0 for link 192.168.123.0 ! here is the information for all neighbors connected to me! "
+- Type 3 : Network-summary LSA : "Hello ! I'm Area 1's ABR ! I see that I'm also connected to Area 0, here is a resumé of all networks in area 1 for area 0 to know where to reach us!" 
+- Type 4 : ASBR-summary-LSA : "Hello ! I'm Area 1's ABR ! I know who the ASBR is ! I'm sending the routes out to you other areas so you know how to get out of this OSPF Domain!"
+- Type 5 : AS-External-LSA : "Hello ! I am area 1's ASBR, I'm receiving a route from the outside world and I'm forwarding it to you guys! 
+- Type 7 : NSSA-LSA : "Hello ! I am area 1's ASBR, I see that I'm in a not so stubby area and they don't accept type 5 LSA's, you know what ! I'll send it as a type 7 LSA and my buddy ABR will take care of the translation if it has to go to other zones ! 
 
 ## Stub Area types
 There are 3 types of stub areas in OSPF : 
