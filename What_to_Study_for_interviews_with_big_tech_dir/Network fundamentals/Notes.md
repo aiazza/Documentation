@@ -2,16 +2,12 @@
 
 ## Life of a Packet
 ### What happens when I type google.com in my browser
-- DNS Query Initiation
-- Formation and Encapsulation of DNS Query
-- IP Packet Encapsulation
-- Ethernet Frame Encapsulation
-- Transmission
-- Routing through the Network
-- DNS Resolution
-- Secure Communication Initiation
-- TCP Connection Establishment
-- Journey Through the Network
+- DNS resolution 
+  - ARP request : My machine will check in it's ARP cache if it knows the local Gateway MAC, if not it will send an ARP request. The ARP request will be sent flooded out of it's interfaces asking who has this IP address ?(DNS IP). If there is a L2 switch in between it will first check if it doesn't have the MAC of the gateway in it's MAC table, if not flood it out all ports except the one it received it on. The router configured as local gateway will respond to the ARP request, the switch will update it's MAC table and forward the ARP reply to the host. Now the host knows it's L3 destination IP (DNS) and it's L2 destination MAC (Gateway) So it will create a UDP packet with destination port 53 (DNS packet) with that info. The DNS will reply with whatever IP it has for Google.com, the PC will then have the correct IP to use to communicate with google.com
+- TCP Connection setup : Once My PC has the correct IP of google.com it will create TCP segment with destination port 443 to initiate connection with the host, the first step would be 3 way handshake. that TCP segment would be encapsulated in an IP header which would be used to be routed on the network towards google.com.
+- L3 Routing : The Packet would then hit the default gateway which would lookup the route in its RIB to see where to send that packet, and so on and so forth until it egresses towards the internet hits google.com host and replies to the PC.
+- HTTPS connection setup
+- Secure exchange of Data 
 
 ## Network Tools
 ### How does traceroute work
