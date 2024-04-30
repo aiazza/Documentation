@@ -264,3 +264,8 @@ Here is an example:
 #### Path hunting
 
 What is path hunting ? 
+
+## BGP In the datacenter 
+
+Since a couple of years, BGP is being used as the IGP in Large scale datacenters, there are 2 well-known implementations of this, one detailed in rfc7938 and the other detailed in meta's whitepaper https://tinyurl.com/MetaBGPDC Let's go over why BGP is used in the first place and then dive into the specifities of each implementation.
+
