@@ -269,3 +269,11 @@ What is path hunting ?
 
 Since a couple of years, BGP is being used as the IGP in Large scale datacenters, there are 2 well-known implementations of this, one detailed in rfc7938 and the other detailed in meta's whitepaper https://tinyurl.com/MetaBGPDC Let's go over why BGP is used in the first place and then dive into the specifities of each implementation.
 
+
+## References 
+
+https://scontent-lga3-2.xx.fbcdn.net/v/t39.8562-6/246532133_1280824915694307_2187851754043015516_n.pdf?_nc_cat=104&ccb=1-7&_nc_sid=e280be&_nc_ohc=PcXaoyrPFm8Ab5YncpV&_nc_ht=scontent-lga3-2.xx&oh=00_AfC9ZiyF2a3cEHIodAZJ7ZZq7BEJMJ3iEqd8hf83UZbsTA&oe=66331830
+
+https://datatracker.ietf.org/doc/html/rfc7938
+
+https://learning.oreilly.com/library/view/bgp-in-the/9781491983416/
