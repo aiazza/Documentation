@@ -85,3 +85,7 @@ In the world of data centers that have customers training very large language mo
 
 ## Conclusion
 Phew, that was a lot, right? 😄 We just dipped our toes into the massive ocean of HPC/AI networking. I tried to keep it high-level to avoid turning this into a novel, but there’s so much more we could talk about. Got thoughts or questions? Hit me up on LinkedIn or wherever you like to chat. Let’s keep this conversation going!
+
+## References 
+
+PFC : https://www.youtube.com/watch?v=OxP7Q2I0EO0
