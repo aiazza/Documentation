@@ -25,3 +25,22 @@ In VXLAN, multicast can be utilized to facilitate the mapping of remote MAC addr
 - **Handling ARP Replies**: Similarly, when these VTEPs receive an ARP reply, it is also encapsulated and sent to the multicast group. Upon receiving and decapsulating the ARP reply, they update their mapping tables with the responder’s MAC address and corresponding VTEP IP.
 
 This method enables each VTEP to dynamically learn and store the necessary MAC-to-IP mappings for Layer 2 forwarding within the VXLAN network, without requiring pre-configuration of these mappings.
+
+#### EVPN 
+
+- What is EVPN ?
+EVPN stands for Ethernet VPN and it's basically MP-BGP which allows peers to exchange MAC addresses along with BGP prefixes
+
+- How does it work
+
+Assuming the underlay L3 Network is healthy , EVPN BGP peering are done between PE Routers which exchange all the MAC-IP pairs, once VTEP receives that update it will update it's VXLAN table accordingly. 
+
+#### EVPN Route types 
+
+Type 1 : Ethernet auto-discovery route : allows remote leaves to discover the different paths that it could use
+Type 2 : Inclusive Multicast Ethernet Tag Route , used by VTEP to advertise end host reachability. We can have Mac only and IP/MAC routes 
+Type 3 : Ingress replication : It informs other VTEPs about the multicast or unicast group information that should be used for BUM (Broadcast, Unknown unicast, Multicast) traffic. These routes are crucial for setting up the replication list for BUM traffic when multicast is not used.
+Type 4 : Ethernet segment route : Used when we have BUM traffic destined to multi-homed server, we elect a designated forwarder to distribute all BUM traffic 
+Type 5 : IP prefix route for intersubnet connectivity. Used to bring external routes into the BGP control plane. 
+
+
