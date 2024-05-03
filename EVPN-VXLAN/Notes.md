@@ -37,10 +37,10 @@ Assuming the underlay L3 Network is healthy , EVPN BGP peering are done between 
 
 #### EVPN Route types 
 
-Type 1 : Ethernet auto-discovery route : allows remote leaves to discover the different paths that it could use
-Type 2 : Inclusive Multicast Ethernet Tag Route , used by VTEP to advertise end host reachability. We can have Mac only and IP/MAC routes 
-Type 3 : Ingress replication : It informs other VTEPs about the multicast or unicast group information that should be used for BUM (Broadcast, Unknown unicast, Multicast) traffic. These routes are crucial for setting up the replication list for BUM traffic when multicast is not used.
-Type 4 : Ethernet segment route : Used when we have BUM traffic destined to multi-homed server, we elect a designated forwarder to distribute all BUM traffic 
-Type 5 : IP prefix route for intersubnet connectivity. Used to bring external routes into the BGP control plane. 
+- Type 1 : Ethernet auto-discovery route : allows remote leaves to discover the different paths that it could use
+- Type 2 : Inclusive Multicast Ethernet Tag Route , used by VTEP to advertise end host reachability. We can have Mac only and IP/MAC routes 
+- Type 3 : Ingress replication : It informs other VTEPs about the multicast or unicast group information that should be used for BUM (Broadcast, Unknown unicast, Multicast) traffic. These routes are crucial for setting up the replication list for BUM traffic when multicast is not used.
+- Type 4 : Ethernet segment route : Used when we have BUM traffic destined to multi-homed server, we elect a designated forwarder to distribute all BUM traffic 
+- Type 5 : IP prefix route for intersubnet connectivity. Used to bring external routes into the BGP control plane. 
 
 
